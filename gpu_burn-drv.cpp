@@ -190,8 +190,11 @@ template <class T> class GPU_Test {
                   d_resultSize; // We remove A and B sizes
         printf("Results are %zu bytes each, thus performing %zu iterations\n",
                d_resultSize, d_iters);
-        if ((size_t)useBytes < 3 * d_resultSize)
+        if ((size_t)useBytes < 3 * d_resultSize) {
+            printf("Provided bytes (%lu MB) are not sufficient. aborting.\n",
+                    useBytes / 1024ul / 1024ul);
             throw std::string("Low mem for result. aborting.\n");
+        }
         checkError(cuMemAlloc(&d_Cdata, d_iters * d_resultSize), "C alloc");
         checkError(cuMemAlloc(&d_Adata, d_resultSize), "A alloc");
         checkError(cuMemAlloc(&d_Bdata, d_resultSize), "B alloc");
